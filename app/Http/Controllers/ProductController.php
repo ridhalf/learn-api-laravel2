@@ -20,7 +20,7 @@ class ProductController extends Controller
     }
     public function detail($id)
     {
-        $products = Product::select('id', 'kategori', 'quantity', 'nama')->where('id', $id)->get();
+        $products = Product::select('id', 'kategori', 'quantity', 'nama')->where('id', $id)->first();
         if ($products == null) {
             return $this->respondError('Product belum ada', 201);
         }
@@ -66,6 +66,16 @@ class ProductController extends Controller
             return $this->respondError('Gagal Mengubah Data Produk', 201);
         else :
             return $this->respondSuccess('Disimpan');
+        endif;
+    }
+    public function destroy($id)
+    {
+        $product = Product::findOrFail($id);
+        $result = $product->delete();
+        if ($result == null) :
+            return $this->respondError('Gagal Menghapus Data Produk', 201);
+        else :
+            return $this->respondSuccess('Dihapus');
         endif;
     }
 

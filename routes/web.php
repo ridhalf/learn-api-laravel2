@@ -23,4 +23,5 @@ $router->group(['prefix' => '', 'middleware' => 'checktoken'], function () use (
     $router->post('products', 'ProductController@store');
     $router->put('products/{id}', 'ProductController@update');
     $router->get('products/{id}', 'ProductController@detail');
+    $router->delete('products/{id}', 'ProductController@destroy');
 });
