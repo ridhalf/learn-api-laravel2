@@ -17,4 +17,8 @@ $router->get('/', function () use ($router) {
     return $router->app->version();
 });
 $router->get('auth', 'AuthController@login');
-$router->get('products', 'ProductController@index');
+
+$router->group(['prefix' => '', 'middleware' => 'checktoken'], function () use ($router) {
+    $router->get('products', 'ProductController@index');
+    $router->post('products', 'ProductController@store');
+});

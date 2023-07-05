@@ -14,7 +14,7 @@ class JwtMiddleware
     public function handle($request, Closure $next, $guard = null)
     {
         $token      = trim($request->header('x-token'));
-        $username   = trim($request->header('x-username'));
+        $email   = trim($request->header('x-email'));
 
         if (!$token) {
             return response()->json([
@@ -27,10 +27,10 @@ class JwtMiddleware
             $request->headers->set('Authorization', 'Bearer ' . $token);
         }
 
-        if (!$username) {
+        if (!$email) {
             return response()->json([
                 'metadata' => [
-                    'message' => 'x-username tidak ditemukan pada request header',
+                    'message' => 'x-email tidak ditemukan pada request header',
                     'code' => 201
                 ]
             ], 201);
