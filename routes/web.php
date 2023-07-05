@@ -21,4 +21,6 @@ $router->get('auth', 'AuthController@login');
 $router->group(['prefix' => '', 'middleware' => 'checktoken'], function () use ($router) {
     $router->get('products', 'ProductController@index');
     $router->post('products', 'ProductController@store');
+    $router->put('products/{id}', 'ProductController@update');
+    $router->get('products/{id}', 'ProductController@detail');
 });

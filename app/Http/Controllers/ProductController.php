@@ -18,6 +18,14 @@ class ProductController extends Controller
         }
         return $this->respondSuccess($products);
     }
+    public function detail($id)
+    {
+        $products = Product::select('id', 'kategori', 'quantity', 'nama')->where('id', $id)->get();
+        if ($products == null) {
+            return $this->respondError('Product belum ada', 201);
+        }
+        return $this->respondSuccess($products);
+    }
 
     public function store(Request $request)
     {
@@ -26,6 +34,43 @@ class ProductController extends Controller
         $kategori = trim($request->kategori);
         $quantity = trim($request->quantity);
 
+        $validate = $this->_validate($request);
+
+        if ($validate->fails()) {
+            return $this->validationErrors($validate);
+        }
+
+        $product = new Product;
+        $product->nama = $request->nama;
+        $product->kategori = $request->kategori;
+        $product->quantity = $request->quantity;
+        $save = $product->save();
+        if ($save == null) :
+            return $this->respondError('Gagal Menyimpan Data Produk', 201);
+        else :
+            return $this->respondSuccess('Disimpan');
+        endif;
+    }
+    public function update(Request $request, $id)
+    {
+        $validate = $this->_validate($request);
+        if ($validate->fails()) {
+            return $this->validationErrors($validate);
+        }
+        $product = Product::findOrFail($id);
+        $product->nama = $request->nama;
+        $product->kategori = $request->kategori;
+        $product->quantity = $request->quantity;
+        $save = $product->save();
+        if ($save == null) :
+            return $this->respondError('Gagal Mengubah Data Produk', 201);
+        else :
+            return $this->respondSuccess('Disimpan');
+        endif;
+    }
+
+    protected function _validate($request)
+    {
         $validate = Validator::make($request->all(), [
             'nama' => 'required|min:1|max:100',
             'kategori' => 'required',
@@ -41,19 +86,6 @@ class ProductController extends Controller
             'kategori' => 'Kategori',
             'quantity' => 'Kuantitas'
         ]);
-        if ($validate->fails()) {
-            return $this->validationErrors($validate);
-        }
-
-        $product = new Product;
-        $product->nama = $request->nama;
-        $product->kategori = $request->kategori;
-        $product->quantity = $request->quantity;
-        $save = $product->save();
-        if ($save == null) :
-            return $this->respondError('Gagal Menyimpan Data Peserta Baru', 201);
-        else :
-            return $this->respondSuccess('Disimpan');
-        endif;
+        return $validate;
     }
 }
